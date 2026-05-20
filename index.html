@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gatito Chill: El Laberinto de los Valores</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Press+Start+2P&family=Kalam:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --comic-red: #FF4B2B;
+            --comic-blue: #00B4DB;
+            --comic-yellow: #FFD200;
+        }
+
+        body {
+            background-color: #1a1a2e;
+            background-image: radial-gradient(#2d3436 10%, transparent 10%);
+            background-size: 25px 25px;
+            font-family: 'Open Sans', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .comic-header {
+            font-family: 'Bangers', cursive;
+            text-shadow: 4px 4px 0px var(--comic-red);
+            -webkit-text-stroke: 1px black;
+        }
+
+        .ben-day-card {
+            background: #fff;
+            color: #000;
+            border: 5px solid #000;
+            box-shadow: 12px 12px 0px var(--comic-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ben-day-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(#ccc 10%, transparent 10%);
+            background-size: 10px 10px;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        .btn-action {
+            font-family: 'Bangers', cursive;
+            transition: all 0.2s;
+            border: 3px solid black;
+            box-shadow: 5px 5px 0px black;
+        }
+
+        .btn-action:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px black;
+        }
+
+        .btn-action:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px black;
+        }
+
+        .locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+
+        .casilla-badge {
+            background: var(--comic-yellow);
+            border: 2px solid black;
+            padding: 5px 15px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            display: inline-block;
+            transform: rotate(-3deg);
+        }
+
+        .pista-font {
+            font-family: 'Kalam', cursive;
+        }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .shake { animation: shake 0.4s ease-in-out; }
+    </style>
+</head>
+<body class="p-4">
+
+    <header class="text-center py-6">
+        <h1 class="text-5xl md:text-7xl comic-header mb-2 uppercase">Gatito Chill: Operación Incógnita</h1>
+        <div class="inline-block bg-white text-black font-bold px-4 py-1 border-2 border-black rotate-1">
+            OBJETIVO: Encontrar el valor de cada figura para avanzar por las casillas (1° a 7°).
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto">
+        <!-- PANTALLA REGISTRO E INTRODUCCIÓN -->
+        <div id="intro-box" class="ben-day-card p-6 mb-8">
+            <div class="flex flex-col md:flex-row items-center gap-6 mb-6">
+                <span class="text-8xl">😺🥤</span>
+                <div class="space-y-3">
+                    <p class="italic text-lg text-gray-800 font-semibold">
+                        "¡Oye! El <strong>Dr. Paréntesis</strong> me ha encerrado en una bóveda digital. Para sacarme, debes resolver los códigos de cada casilla. 
+                        ¡Ojo! El resultado de la operation siempre es el <strong>número de la casilla</strong> en la que estás. 
+                        ¡Solo si encuentras el valor podrás avanzar a la meta!"
+                    </p>
+                </div>
+            </div>
+            
+            <div class="bg-gray-100 p-6 border-4 border-black rounded mb-6 text-black">
+                <label class="block text-xl font-bold mb-2 uppercase text-center text-blue-900">Ingresa tu Nombre de Héroe:</label>
+                <input type="text" id="student-name" placeholder="Escribe tu nombre de campeón..." 
+                    class="w-full p-4 border-4 border-black text-xl font-bold text-center uppercase focus:ring-4 focus:ring-yellow-400 focus:outline-none">
+            </div>
+
+            <button onclick="comenzarMision()" class="btn-action bg-green-500 text-white text-3xl w-full py-4">
+                ¡INICIAR RESCATE!
+            </button>
+        </div>
+
+        <!-- TABLERO DE JUEGO -->
+        <div id="game-board" class="grid grid-cols-1 md:grid-cols-2 gap-8 hidden">
+            
+            <div id="left-panel" class="ben-day-card p-8 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-6">
+                        <div id="casilla-info" class="casilla-badge uppercase">CASILLA 1°</div>
+                        <div class="bg-black text-yellow-400 border-2 border-black font-bold px-3 py-1 font-mono text-lg rounded" id="live-timer">
+                            TIEMPO: 00:00
+                        </div>
+                    </div>
+                    
+                    <div id="equation-display" class="text-3xl font-bold mb-8 text-center bg-gray-100 p-6 border-dashed border-4 border-gray-400 text-black">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+
+                    <div class="space-y-4">
+                        <label class="block font-bold text-black text-lg">Selecciona el valor de la figura:</label>
+                        <select id="answer-select" class="w-full p-4 border-4 border-black text-xl font-bold appearance-none bg-white text-black">
+                            <!-- Opciones cargadas dinámicamente -->
+                        </select>
+                        <button onclick="checkStep()" class="btn-action bg-blue-500 text-white w-full py-4 text-2xl uppercase">
+                            Validar Código
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col justify-between p-6 bg-black bg-opacity-40 border-4 border-black rounded-lg min-h-[400px]">
+                <h3 class="comic-header text-3xl text-yellow-400 mb-4 uppercase">Ruta de Escape</h3>
+                <div id="steps-map" class="space-y-2">
+                    <!-- Casillas se renderizan aquí -->
+                </div>
+                <div class="mt-6 text-center">
+                    <div id="cat-status" class="text-6xl transition-all duration-500">🔒😿</div>
+                    <p class="font-bold mt-2 text-xl" id="status-text">Estado: Gatito Atrapado</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA FINAL REPORTE PEDAGÓGICO -->
+        <div id="win-screen" class="ben-day-card p-8 text-center hidden">
+            <h2 class="text-6xl comic-header text-yellow-500 mb-4 animate-bounce">¡MISIÓN CUMPLIDA!</h2>
+            <div class="text-8xl mb-6">😎🍕</div>
+            
+            <p class="text-2xl mb-6 font-bold text-gray-800">Has llegado a la meta y derrotado al Dr. Paréntesis. ¡Gatito Chill está a salvo!</p>
+            
+            <!-- CONTENEDOR DE DIAGNÓSTICO DOCENTE -->
+            <div class="bg-gray-900 border-4 border-black p-6 rounded text-left mb-6 font-mono text-white text-sm whitespace-pre-wrap shadow-inner" id="reporte-consola">
+                <!-- Resumen pedagógico dinámico -->
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button id="send-btn" onclick="sendToSheet()" class="btn-action bg-green-500 text-white px-8 py-4 text-2xl flex-1 uppercase">
+                    Enviar al Profe
+                </button>
+                <button onclick="location.reload()" class="btn-action bg-red-500 text-white px-8 py-4 text-2xl flex-1 uppercase">
+                    Reiniciar
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- BURBUJA MODAL ESTILO CÓMIC (REEMPLAZO DE ALERTS) -->
+    <div id="comic-overlay" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="ben-day-card max-w-sm w-full p-6 text-center bg-white border-4 border-black rounded shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] text-black">
+            <h2 id="modal-title" class="comic-header text-5xl mb-4 text-red-600"></h2>
+            <p id="modal-text" class="text-lg font-bold mb-4 text-gray-800"></p>
+            <div id="pista-contenedor" class="hidden bg-yellow-100 border-2 border-dashed border-yellow-600 rounded p-4 mb-4">
+                <p id="pista-text" class="pista-font text-xl text-yellow-900"></p>
+            </div>
+            <button onclick="closeModal()" class="btn-action bg-blue-500 text-white text-xl px-6 py-2 w-full uppercase">Entendido</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        //  CONFIGURACIÓN DEL FORMULARIO DE GOOGLE
+        // ==========================================
+        
+        // 1. URL de destino del Formulario obtenida correctamente
+        const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfqm_PIgqTxn371cja6PzeEC5N2UtPEXB7imNpUcw6XSYm8-Q/formResponse"; 
+        
+        // 2. Identificadores de tus preguntas validados:
+        const ENTRY_NAME = "entry.1488317723";          // Campo de Nombre
+        const ENTRY_SCORE = "entry.816300458";         // Campo de Puntaje (Ej: "Puntaje")
+        const ENTRY_TIME = "entry.85300170";          // Campo de Tiempo (Ej: "Tiempo de resolución")
+        const ENTRY_CORRECTAS = "entry.1572512256";      // Campo de Habilidades Logradas (Ej: "Correctas")
+        const ENTRY_INCORRECTAS = "entry.639898844";    // Campo de Nudos a Reforzar (Ej: "Incorrectas")
+
+        // ==========================================
+
+        // Desafíos con indicadores micro-curriculares específicos
+        const challenges = [
+            { id: 1, symbol: "■", formula: "2 • ■ - 9 = 1", options: [3, 5, 4, 10], correct: 5, t: "Resolución de ecuaciones lineales de primer grado de la forma ax - b = c" },
+            { id: 2, symbol: "●", formula: "● - 3 = 2", options: [5, 1, 6, 4], correct: 5, t: "Resolución de ecuaciones básicas con sustracción simple (x - a = b)" },
+            { id: 3, symbol: "▲", formula: "(▲ + 2) : 3 = 1", options: [1, 2, 4, 7], correct: 1, t: "Ecuaciones de primer grado con división y paréntesis" },
+            { id: 4, symbol: "★", formula: "★ : 2 + 2 = 4", options: [4, 8, 2, 6], correct: 4, t: "Modelamiento de ecuaciones que involucran divisiones racionales simples" },
+            { id: 5, symbol: "▲", formula: "(▲ + 4) • 4 - 8 = 28", options: [5, 3, 4, 10], correct: 5, t: "Operaciones algebraicas combinadas de mayor complejidad con uso de paréntesis" },
+            { id: 6, symbol: "◆", formula: "◆ + 7 = 13", options: [6, 7, 5, 8], correct: 6, t: "Modelación de ecuaciones lineales mediante adición directa (x + a = b)" }
+        ];
+
+        let currentStepIndex = 0;
+        let studentName = "";
+        let startTime = 0;
+        let timerInterval;
+        let score = 0;
+        
+        // Sets de rastreo curricular para reporte docente
+        let correctTopics = new Set();
+        let incorrectTopics = new Set();
+        let tempTopicFailed = false;
+
+        function comenzarMision() {
+            const nameInput = document.getElementById('student-name');
+            studentName = nameInput.value.trim().toUpperCase();
+            
+            if (studentName === "") {
+                showModal("¡ALERTA!", "¡Deber registrar tu nombre antes de comenzar el rescate de Gatito Chill!");
+                return;
+            }
+
+            document.getElementById('intro-box').classList.add('hidden');
+            document.getElementById('game-board').classList.remove('hidden');
+            
+            startTime = Date.now();
+            correctTopics.clear();
+            incorrectTopics.clear();
+            startTimer();
+            initMap();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const diff = Math.floor((Date.now() - startTime) / 1000);
+                const m = Math.floor(diff / 60).toString().padStart(2, '0');
+                const s = (diff % 60).toString().padStart(2, '0');
+                document.getElementById('live-timer').innerText = `TIEMPO: ${m}:${s}`;
+            }, 1000);
+        }
+
+        function initMap() {
+            const map = document.getElementById('steps-map');
+            map.innerHTML = '';
+            for (let i = 1; i <= 7; i++) {
+                const step = document.createElement('div');
+                step.id = `step-bar-${i}`;
+                step.className = "p-2 border-2 border-black bg-gray-600 font-bold text-center transition-all text-white";
+                step.innerText = i === 7 ? "META 🏁" : `CASILLA ${i}°`;
+                map.appendChild(step);
+            }
+            updateChallenge();
+        }
+
+        function updateChallenge() {
+            // Si llegamos a la meta (Casilla 7)
+            if (currentStepIndex >= challenges.length) {
+                concludeGame();
+                return;
+            }
+
+            const challenge = challenges[currentStepIndex];
+            tempTopicFailed = false; // Reiniciamos indicador de error en esta casilla
+            
+            document.getElementById('casilla-info').innerText = `CASILLA ${challenge.id}°`;
+            document.getElementById('equation-display').innerHTML = `Encuentra el valor de ${challenge.symbol}:<br><span class="text-blue-600">${challenge.formula}</span>`;
+            
+            const select = document.getElementById('answer-select');
+            select.innerHTML = '<option value="" disabled selected>-- Elige un número --</option>';
+            
+            const shuffled = [...challenge.options].sort(() => Math.random() - 0.5);
+            shuffled.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt;
+                el.innerText = `Valor: ${opt}`;
+                select.appendChild(el);
+            });
+
+            // Actualizar visualizador de ruta de escape
+            for (let i = 1; i <= 7; i++) {
+                const bar = document.getElementById(`step-bar-${i}`);
+                if (i < challenge.id) {
+                    bar.className = "p-2 border-2 border-black bg-green-500 text-white font-bold text-center";
+                } else if (i === challenge.id) {
+                    bar.className = "p-2 border-2 border-black bg-yellow-400 text-black font-bold text-center animate-pulse";
+                }
+            }
+        }
+
+        function checkStep() {
+            const select = document.getElementById('answer-select');
+            const userVal = parseInt(select.value);
+            
+            if (isNaN(userVal)) {
+                showModal("¡CUIDADO!", "Por favor selecciona una alternativa numérica.");
+                return;
+            }
+
+            const challenge = challenges[currentStepIndex];
+
+            if (userVal === challenge.correct) {
+                // Registrar destreza pedagógica
+                if (!tempTopicFailed) {
+                    correctTopics.add(challenge.t);
+                }
+                
+                score += 100;
+                
+                // Efecto del gatito progresivo
+                if (currentStepIndex === 2) {
+                    document.getElementById('cat-status').innerText = "🔓😺";
+                    document.getElementById('status-text').innerText = "Estado: ¡Forzando Cerradura!";
+                } else if (currentStepIndex === 4) {
+                    document.getElementById('cat-status').innerText = "🥤😺";
+                    document.getElementById('status-text').innerText = "Estado: ¡Gatito hidratándose!";
+                }
+
+                showModal("¡POW!", "¡Valor correcto! Código validado con éxito. ¡Avanzas de casilla!", null, () => {
+                    currentStepIndex++;
+                    updateChallenge();
+                });
+            } else {
+                tempTopicFailed = true;
+                incorrectTopics.add(challenge.t);
+                document.getElementById('left-panel').classList.add('shake');
+                setTimeout(() => document.getElementById('left-panel').classList.remove('shake'), 400);
+                
+                showModal("¡ZAP!", "El código ingresado no equilibra la balanza. ¡Gatito Chill sigue atrapado!", "Pista: Reemplaza la figura de la ecuación por el valor seleccionado y verifica si la igualdad se cumple.");
+            }
+        }
+
+        function concludeGame() {
+            clearInterval(timerInterval);
+            confetti({ particleCount: 200, spread: 80 });
+            
+            const finalTime = document.getElementById('live-timer').innerText.replace("TIEMPO: ", "");
+            document.getElementById('game-board').classList.add('hidden');
+            document.getElementById('win-screen').classList.remove('hidden');
+
+            const listCorrectas = Array.from(correctTopics).map(t => `• ${t}`).join("\n") || "Ninguna";
+            const listIncorrectas = Array.from(incorrectTopics).map(t => `• ${t}`).join("\n") || "¡Ninguna! Dominio absoluto de ecuaciones.";
+
+            const reporteTxt = `📋 REPORTE EVALUATIVO - DOCENTE 📋
+Estudiante: ${studentName}
+Puntaje Total: ${score} Ptos
+Tiempo total de ejecución: ${finalTime}
+
+🎯 HABILIDADES LOGRADAS:
+${listCorrectas}
+
+⚠️ NUDOS CRÍTICAS A REFORZAR:
+${listIncorrectas}`;
+
+            document.getElementById('reporte-consola').innerText = reporteTxt;
+        }
+
+        // Sistema de Modales Cómics no bloqueantes (Reemplazo de alertas)
+        let modalCallback = null;
+
+        function showModal(title, text, hint = null, callback = null) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-text').innerText = text;
+            modalCallback = callback;
+
+            const titleElement = document.getElementById('modal-title');
+            if (title === "¡POW!") {
+                titleElement.className = "comic-header text-5xl mb-4 text-green-600";
+            } else {
+                titleElement.className = "comic-header text-5xl mb-4 text-red-600";
+            }
+
+            const container = document.getElementById('pista-contenedor');
+            if (hint) {
+                document.getElementById('pista-text').innerText = hint;
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+
+            document.getElementById('comic-overlay').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('comic-overlay').classList.add('hidden');
+            if (modalCallback) {
+                modalCallback();
+                modalCallback = null;
+            }
+        }
+
+        // Envío seguro de datos al Google Sheet
+        async function sendToSheet() {
+            const btn = document.getElementById('send-btn');
+            const time = document.getElementById('live-timer').innerText.replace("TIEMPO: ", "");
+            
+            btn.disabled = true;
+            btn.innerText = "ENVIANDO REPORTE...";
+
+            const txtCorrectas = Array.from(correctTopics).join(", ") || "Ninguna";
+            const txtIncorrectas = Array.from(incorrectTopics).join(", ") || "Ninguna";
+
+            const formData = new URLSearchParams();
+            formData.append(ENTRY_NAME, studentName);
+            formData.append(ENTRY_SCORE, score);
+            formData.append(ENTRY_TIME, time);
+            formData.append(ENTRY_CORRECTAS, txtCorrectas);
+            formData.append(ENTRY_INCORRECTAS, txtIncorrectas);
+
+            try {
+                await fetch(GOOGLE_FORM_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formData.toString()
+                });
+                
+                btn.innerText = "¡REGISTRADO! 🏆";
+                btn.className = "btn-action bg-green-600 text-white px-8 py-4 text-2xl flex-1 uppercase";
+            } catch (e) {
+                btn.innerText = "ERROR AL ENVIAR";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
