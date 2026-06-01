@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gatito Chill: El Laberinto de los Valores</title>
+    <title>Gatito Chill vs Patito Amarillito: Misiones Fraccionarias</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Press+Start+2P&family=Kalam:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -12,11 +12,12 @@
             --comic-red: #FF4B2B;
             --comic-blue: #00B4DB;
             --comic-yellow: #FFD200;
+            --comic-purple: #8E2DE2;
         }
 
         body {
-            background-color: #1a1a2e;
-            background-image: radial-gradient(#2d3436 10%, transparent 10%);
+            background-color: #0f172a;
+            background-image: radial-gradient(#1e293b 10%, transparent 10%);
             background-size: 25px 25px;
             font-family: 'Open Sans', sans-serif;
             color: #fff;
@@ -33,7 +34,7 @@
             background: #fff;
             color: #000;
             border: 5px solid #000;
-            box-shadow: 12px 12px 0px var(--comic-blue);
+            box-shadow: 12px 12px 0px var(--comic-purple);
             position: relative;
             overflow: hidden;
         }
@@ -42,9 +43,9 @@
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-image: radial-gradient(#ccc 10%, transparent 10%);
-            background-size: 10px 10px;
-            opacity: 0.2;
+            background-image: radial-gradient(#cbd5e1 8%, transparent 8%);
+            background-size: 12px 12px;
+            opacity: 0.15;
             pointer-events: none;
         }
 
@@ -65,7 +66,23 @@
             box-shadow: 2px 2px 0px black;
         }
 
-        .locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+        /* Clase tipográfica ultra-legible para alternativas matemáticas */
+        .btn-alternativa {
+            font-family: 'Open Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            transition: all 0.2s;
+            border: 3px solid black;
+            box-shadow: 5px 5px 0px black;
+        }
+
+        .btn-alternativa:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px black;
+        }
+
+        .btn-alternativa:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px black;
+        }
 
         .casilla-badge {
             background: var(--comic-yellow);
@@ -74,98 +91,259 @@
             font-family: 'Press Start 2P', cursive;
             font-size: 0.7rem;
             display: inline-block;
-            transform: rotate(-3deg);
+            transform: rotate(-2deg);
         }
 
         .pista-font {
             font-family: 'Kalam', cursive;
         }
 
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-        .shake { animation: shake 0.4s ease-in-out; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+        .shake { animation: shake 0.3s ease-in-out; }
+
+        /* Estilos interactivos para la correspondencia de conceptos */
+        .match-card {
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+        }
+        .match-card:hover:not(.matched) {
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px #000;
+        }
+        .match-card.selected {
+            background-color: #bfdbfe !important;
+            border-color: #2563eb !important;
+            transform: scale(1.02);
+        }
+        .match-card.matched {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            cursor: default;
+        }
     </style>
 </head>
 <body class="p-4">
 
     <header class="text-center py-6">
-        <h1 class="text-5xl md:text-7xl comic-header mb-2 uppercase">Gatito Chill: Operación Incógnita</h1>
+        <h1 class="text-5xl md:text-7xl comic-header mb-2 uppercase tracking-wide">Gatito Chill VS Patito Amarillito</h1>
         <div class="inline-block bg-white text-black font-bold px-4 py-1 border-2 border-black rotate-1">
-            OBJETIVO: Encontrar el valor de cada figura para avanzar por las casillas (1° a 7°).
+            Misiones Fraccionarias: Fracciones Impropias, Números Mixtos y Recta Numérica.
         </div>
     </header>
 
     <main class="max-w-4xl mx-auto">
-        <!-- PANTALLA REGISTRO E INTRODUCCIÓN -->
+        
+        <!-- PANTALLA 1: REGISTRO E INTRODUCCIÓN SOCIOEMOCIONAL -->
         <div id="intro-box" class="ben-day-card p-6 mb-8">
             <div class="flex flex-col md:flex-row items-center gap-6 mb-6">
-                <span class="text-8xl">😺🥤</span>
+                <span class="text-8xl">😺🥤 vs 🦆</span>
                 <div class="space-y-3">
-                    <p class="italic text-lg text-gray-800 font-semibold">
-                        "¡Oye! El <strong>Dr. Paréntesis</strong> me ha encerrado en una bóveda digital. Para sacarme, debes resolver los códigos de cada casilla. 
-                        ¡Ojo! El resultado de la operation siempre es el <strong>número de la casilla</strong> en la que estás. 
-                        ¡Solo si encuentras el valor podrás avanzar a la meta!"
+                    <p class="italic text-lg text-gray-800 font-semibold leading-relaxed">
+                        "¡Alerta de emergencia! El malvado <strong>Patito Amarillito</strong> ha robado la receta secreta del Chef Fracción para su 'Imperio de Patitos de Goma'. Gatito Chill debe recorrer los mundos matemáticos para recuperarla. ¡Ayúdanos con tu poder matemático!"
                     </p>
+                </div>
+            </div>
+
+            <!-- REGISTRO EMOCIONAL INICIAL -->
+            <div class="bg-gray-100 p-6 border-4 border-black rounded mb-6 text-black text-center">
+                <h3 class="text-xl font-bold uppercase mb-4 text-purple-900">Antes de comenzar, ¿Cómo te sientes hoy?</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button onclick="selectMood('Feliz', '😊')" id="mood-1" class="p-3 border-2 border-black bg-white hover:bg-yellow-100 font-bold rounded flex flex-col items-center gap-2 transition">
+                        <span class="text-3xl">😊</span> <span>Feliz</span>
+                    </button>
+                    <button onclick="selectMood('Cansado', '😴')" id="mood-2" class="p-3 border-2 border-black bg-white hover:bg-yellow-100 font-bold rounded flex flex-col items-center gap-2 transition">
+                        <span class="text-3xl">😴</span> <span>Cansado</span>
+                    </button>
+                    <button onclick="selectMood('Nervioso', '😟')" id="mood-3" class="p-3 border-2 border-black bg-white hover:bg-yellow-100 font-bold rounded flex flex-col items-center gap-2 transition">
+                        <span class="text-3xl">😟</span> <span>Nervioso</span>
+                    </button>
+                    <button onclick="selectMood('Frustrado', '😡')" id="mood-4" class="p-3 border-2 border-black bg-white hover:bg-yellow-100 font-bold rounded flex flex-col items-center gap-2 transition">
+                        <span class="text-3xl">😡</span> <span>Frustrado</span>
+                    </button>
                 </div>
             </div>
             
             <div class="bg-gray-100 p-6 border-4 border-black rounded mb-6 text-black">
-                <label class="block text-xl font-bold mb-2 uppercase text-center text-blue-900">Ingresa tu Nombre de Héroe:</label>
+                <label class="block text-xl font-bold mb-2 uppercase text-center text-blue-950">Ingresa tu Nombre de Héroe:</label>
                 <input type="text" id="student-name" placeholder="Escribe tu nombre de campeón..." 
                     class="w-full p-4 border-4 border-black text-xl font-bold text-center uppercase focus:ring-4 focus:ring-yellow-400 focus:outline-none">
             </div>
 
             <button onclick="comenzarMision()" class="btn-action bg-green-500 text-white text-3xl w-full py-4">
-                ¡INICIAR RESCATE!
+                ¡INICIAR EL DESAFÍO FRACCIONARIO!
             </button>
         </div>
 
-        <!-- TABLERO DE JUEGO -->
-        <div id="game-board" class="grid grid-cols-1 md:grid-cols-2 gap-8 hidden">
+        <!-- CONTENEDOR PRINCIPAL DEL JUEGO -->
+        <div id="game-board" class="hidden space-y-8">
             
-            <div id="left-panel" class="ben-day-card p-8 flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-start mb-6">
-                        <div id="casilla-info" class="casilla-badge uppercase">CASILLA 1°</div>
-                        <div class="bg-black text-yellow-400 border-2 border-black font-bold px-3 py-1 font-mono text-lg rounded" id="live-timer">
-                            TIEMPO: 00:00
-                        </div>
+            <!-- MARCADOR SUPERIOR / HISTORIA -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-slate-900 border-4 border-black p-4 rounded-lg">
+                <div class="flex items-center gap-3">
+                    <span class="text-4xl">😺🥤</span>
+                    <div>
+                        <div class="text-xs font-bold text-yellow-400 uppercase">HÉROE</div>
+                        <div class="font-bold text-lg" id="hud-name">GATITO CHILL</div>
                     </div>
+                </div>
+                <div class="text-center bg-black/60 py-2 border-2 border-slate-700 rounded">
+                    <div class="text-xs font-bold text-red-500 uppercase">PUNTAJE</div>
+                    <div class="text-2xl font-black text-white" id="hud-score">0 Ptos</div>
+                </div>
+                <div class="text-right flex items-center justify-end gap-3">
+                    <div>
+                        <div class="text-xs font-bold text-blue-400 uppercase">TIEMPO</div>
+                        <div class="text-lg font-mono font-bold text-white" id="live-timer">00:00</div>
+                    </div>
+                    <span class="text-4xl">🦆🐤</span>
+                </div>
+            </div>
+
+            <!-- SECCIÓN I: SELECCIÓN MÚLTIPLE (10 PREGUNTAS) -->
+            <div id="sec-multiple" class="ben-day-card p-6 md:p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="casilla-badge uppercase">SECCIÓN I: SELECCIÓN MÚLTIPLE</div>
+                    <div class="font-bold text-red-600 font-mono text-sm" id="sec1-progress">Pregunta 1 de 10</div>
+                </div>
+
+                <div class="bg-violet-100 border-4 border-black p-6 rounded mb-6 text-black relative">
+                    <div class="absolute -top-4 -left-3 bg-red-500 text-white font-bold text-xs px-2 py-1 rotate-[-3deg] border border-black uppercase">
+                        El Patito Ataca
+                    </div>
+                    <p class="text-2xl font-bold font-sans" id="sec1-pregunta">Cargando pregunta...</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" id="sec1-opciones">
+                    <!-- Botones de opciones se cargarán de forma dinámica -->
+                </div>
+
+                <!-- Historial del Enfrentamiento Animado -->
+                <div class="bg-gray-100 border-2 border-black rounded p-3 text-black text-sm flex items-center justify-between">
+                    <span id="battle-dialog" class="italic font-bold text-gray-700">"¡El Patito Amarillito desafía tus conocimientos!"</span>
+                    <span class="text-3xl" id="battle-emoji">⚔️</span>
+                </div>
+            </div>
+
+            <!-- SECCIÓN II: TABLA DE EQUIVALENCIAS -->
+            <div id="sec-tabla" class="ben-day-card p-6 md:p-8 hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="casilla-badge uppercase">SECCIÓN II: MÁQUINA DE EQUIVALENCIAS</div>
+                    <div class="font-bold text-purple-700 text-sm">REPARAR MÁQUINA</div>
+                </div>
+                
+                <p class="text-lg font-bold text-gray-800 mb-4 text-center">
+                    🔧 ¡La máquina de pasteles del Chef Fracción fue saboteada por el Patito! Completa las equivalencias correctas para repararla.
+                </p>
+
+                <div class="overflow-x-auto bg-slate-900 p-4 border-4 border-black rounded-lg">
+                    <table class="w-full text-center border-collapse text-white">
+                        <thead>
+                            <tr class="border-b-2 border-slate-700 bg-slate-800 text-yellow-400 font-mono">
+                                <th class="p-3 border-r border-slate-700">Número Mixto</th>
+                                <th class="p-3">Fracción Impropia</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-conversion-body">
+                            <!-- Filas cargadas dinámicamente con inputs interactivos -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <button onclick="checkTablaEquivalencias()" class="btn-action bg-blue-500 text-white w-full py-4 text-2xl uppercase mt-6">
+                    ¡REPARAR MÁQUINA Y CONTINUAR!
+                </button>
+            </div>
+
+            <!-- SECCIÓN III: ASOCIACIÓN DE CONCEPTOS (VOCABULARIO) -->
+            <div id="sec-vocabulario" class="ben-day-card p-6 md:p-8 hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="casilla-badge uppercase">SECCIÓN III: CORRESPONDENCIA</div>
+                    <div class="font-bold text-yellow-600 text-sm">VOCABULARIO MATEMÁTICO</div>
+                </div>
+
+                <p class="text-gray-700 font-bold mb-6 text-center">
+                    🔗 <strong>¡Desafío de Unión!</strong> Selecciona primero una <strong>Definición</strong> en la izquierda y luego haz clic en su <strong>Concepto correspondiente</strong> en la derecha para emparejarlos.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch" id="vocab-game-area">
                     
-                    <div id="equation-display" class="text-3xl font-bold mb-8 text-center bg-gray-100 p-6 border-dashed border-4 border-gray-400 text-black">
-                        <!-- Se llena dinámicamente -->
+                    <!-- Lado izquierdo: Definiciones -->
+                    <div class="space-y-4 flex flex-col justify-between" id="match-definitions-container">
+                        <!-- Generado dinámicamente -->
                     </div>
 
-                    <div class="space-y-4">
-                        <label class="block font-bold text-black text-lg">Selecciona el valor de la figura:</label>
-                        <select id="answer-select" class="w-full p-4 border-4 border-black text-xl font-bold appearance-none bg-white text-black">
-                            <!-- Opciones cargadas dinámicamente -->
+                    <!-- Lado derecho: Conceptos clave -->
+                    <div class="space-y-4 flex flex-col justify-between" id="match-words-container">
+                        <!-- Generado dinámicamente -->
+                    </div>
+
+                </div>
+
+                <button onclick="finishVocabulario()" class="btn-action bg-purple-500 text-white w-full py-4 text-2xl uppercase mt-8">
+                    AVANZAR AL BONUS STAGE
+                </button>
+            </div>
+
+            <!-- BONUS STAGE -->
+            <div id="sec-bonus" class="ben-day-card p-6 md:p-8 hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="casilla-badge uppercase">👑 BONUS STAGE 👑</div>
+                    <div class="font-bold text-red-600 text-sm">¡LA ÚLTIMA TRAMPA DEL PATITO AMARILLITO!</div>
+                </div>
+
+                <div class="bg-purple-950 text-white border-4 border-black p-6 rounded-lg text-center space-y-4 shadow-xl">
+                    <span class="text-6xl">🔮</span>
+                    <h3 class="text-2xl font-black uppercase text-yellow-400">El Desafío Final de la Receta:</h3>
+                    <p class="text-xl font-bold max-w-xl mx-auto italic">
+                        "¡Cuaq! No te llevarás la receta tan fácil, Gatito Chill. Resuelve esto: Tengo una fracción impropia. Si le resto 1 entero, obtengo 2/5. ¿Qué fracción tenía originalmente?"
+                    </p>
+                    
+                    <div class="max-w-xs mx-auto pt-4 text-black">
+                        <select id="bonus-select" class="w-full p-4 border-4 border-black text-xl font-bold appearance-none bg-white">
+                            <option value="" disabled selected>-- Elige tu Respuesta --</option>
+                            <option value="3/5">A) 3/5</option>
+                            <option value="7/5">B) 7/5</option>
+                            <option value="5/5">C) 5/5</option>
+                            <option value="8/5">D) 8/5</option>
                         </select>
-                        <button onclick="checkStep()" class="btn-action bg-blue-500 text-white w-full py-4 text-2xl uppercase">
-                            Validar Código
+                    </div>
+                </div>
+
+                <!-- REGISTRO EMOCIONAL FINAL INTEGRADO AQUÍ PARA EVITAR EL BLOQUEO -->
+                <div class="bg-gray-100 p-6 border-4 border-black rounded mt-6 text-black text-center">
+                    <h3 class="text-xl font-bold uppercase mb-4 text-purple-900">Al terminar esta misión, ¿Cómo te sientes?</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button type="button" onclick="selectMoodFinal('Feliz', '😊')" id="mood-final-1" class="p-3 border-2 border-black bg-white hover:bg-yellow-100 font-bold rounded flex flex-col items-center gap-2 transition">
+                            <span class="text-3xl">😊</span> <span>Feliz</span>
+                        </button>
+                        <button type="button" onclick="selectMoodFinal('Cansado', '😴')" id="mood-final-2" class="p-3 border-2 border-black bg-white hover:bg-yellow-100 font-bold rounded flex flex-col items-center gap-2 transition">
+                            <span class="text-3xl">😴</span> <span>Cansado</span>
+                        </button>
+                        <button type="button" onclick="selectMoodFinal('Nervioso', '😟')" id="mood-final-3" class="p-3 border-2 border-black bg-white hover:bg-yellow-100 font-bold rounded flex flex-col items-center gap-2 transition">
+                            <span class="text-3xl">😟</span> <span>Nervioso</span>
+                        </button>
+                        <button type="button" onclick="selectMoodFinal('Frustrado', '😡')" id="mood-final-4" class="p-3 border-2 border-black bg-white hover:bg-yellow-100 font-bold rounded flex flex-col items-center gap-2 transition">
+                            <span class="text-3xl">😡</span> <span>Frustrado</span>
                         </button>
                     </div>
                 </div>
+
+                <button onclick="checkBonus()" class="btn-action bg-green-500 text-white w-full py-4 text-2xl uppercase mt-6">
+                    ¡FINALIZAR MI MISIÓN MATEMÁTICA!
+                </button>
             </div>
 
-            <div class="flex flex-col justify-between p-6 bg-black bg-opacity-40 border-4 border-black rounded-lg min-h-[400px]">
-                <h3 class="comic-header text-3xl text-yellow-400 mb-4 uppercase">Ruta de Escape</h3>
-                <div id="steps-map" class="space-y-2">
-                    <!-- Casillas se renderizan aquí -->
-                </div>
-                <div class="mt-6 text-center">
-                    <div id="cat-status" class="text-6xl transition-all duration-500">🔒😿</div>
-                    <p class="font-bold mt-2 text-xl" id="status-text">Estado: Gatito Atrapado</p>
-                </div>
-            </div>
         </div>
 
-        <!-- PANTALLA FINAL REPORTE PEDAGÓGICO -->
+        <!-- PANTALLA FINAL: REPORTE PEDAGÓGICO -->
         <div id="win-screen" class="ben-day-card p-8 text-center hidden">
-            <h2 class="text-6xl comic-header text-yellow-500 mb-4 animate-bounce">¡MISIÓN CUMPLIDA!</h2>
-            <div class="text-8xl mb-6">😎🍕</div>
+            <h2 class="text-5xl md:text-6xl comic-header text-yellow-500 mb-4 animate-bounce">¡DERROTASTE AL PATITO AMARILLITO!</h2>
+            <div class="text-8xl mb-6">😺🍕🧁✨</div>
             
-            <p class="text-2xl mb-6 font-bold text-gray-800">Has llegado a la meta y derrotado al Dr. Paréntesis. ¡Gatito Chill está a salvo!</p>
-            
+            <p class="text-2xl mb-6 font-bold text-gray-800">¡Gatito Chill salvó la receta secreta! Has demostrado una comprensión sobresaliente en fracciones impropias y números mixtos.</p>
+
             <!-- CONTENEDOR DE DIAGNÓSTICO DOCENTE -->
             <div class="bg-gray-900 border-4 border-black p-6 rounded text-left mb-6 font-mono text-white text-sm whitespace-pre-wrap shadow-inner" id="reporte-consola">
                 <!-- Resumen pedagógico dinámico -->
@@ -198,57 +376,182 @@
         // ==========================================
         //  CONFIGURACIÓN DEL FORMULARIO DE GOOGLE
         // ==========================================
-        
-        // 1. URL de destino del Formulario obtenida correctamente
         const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfqm_PIgqTxn371cja6PzeEC5N2UtPEXB7imNpUcw6XSYm8-Q/formResponse"; 
         
-        // 2. Identificadores de tus preguntas validados:
+        // Coloca aquí tus entry ID obtenidos de la consola
         const ENTRY_NAME = "entry.1488317723";          // Campo de Nombre
-        const ENTRY_SCORE = "entry.816300458";         // Campo de Puntaje (Ej: "Puntaje")
-        const ENTRY_TIME = "entry.85300170";          // Campo de Tiempo (Ej: "Tiempo de resolución")
-        const ENTRY_CORRECTAS = "entry.1572512256";      // Campo de Habilidades Logradas (Ej: "Correctas")
-        const ENTRY_INCORRECTAS = "entry.639898844";    // Campo de Nudos a Reforzar (Ej: "Incorrectas")
+        const ENTRY_SCORE = "entry.816300458";         // Campo de Puntaje
+        const ENTRY_TIME = "entry.85300170";           // Campo de Tiempo
+        const ENTRY_CORRECTAS = "entry.1572512256";     // Campo "Correctas" / Logradas
+        const ENTRY_INCORRECTAS = "entry.639898844";   // Campo "Incorrectas" / A Reforzar
+        
+        // Identificadores entry validados correctamente:
+        const ENTRY_CANT_ACIERTOS = "entry.1448036120";   // ID de "CANTIDAD DE ACIERTOS"
+        const ENTRY_CANT_DESACIERTOS = "entry.1898636414"; // ID de "CANTIDAD DESACIERTOS"
+        const ENTRY_BONUS = "entry.875152173";            // ID de la pregunta del "BONUS TRACK / ACERTIJO INVERSO"
 
         // ==========================================
-
-        // Desafíos con indicadores micro-curriculares específicos
-        const challenges = [
-            { id: 1, symbol: "■", formula: "2 • ■ - 9 = 1", options: [3, 5, 4, 10], correct: 5, t: "Resolución de ecuaciones lineales de primer grado de la forma ax - b = c" },
-            { id: 2, symbol: "●", formula: "● - 3 = 2", options: [5, 1, 6, 4], correct: 5, t: "Resolución de ecuaciones básicas con sustracción simple (x - a = b)" },
-            { id: 3, symbol: "▲", formula: "(▲ + 2) : 3 = 1", options: [1, 2, 4, 7], correct: 1, t: "Ecuaciones de primer grado con división y paréntesis" },
-            { id: 4, symbol: "★", formula: "★ : 2 + 2 = 4", options: [4, 8, 2, 6], correct: 4, t: "Modelamiento de ecuaciones que involucran divisiones racionales simples" },
-            { id: 5, symbol: "▲", formula: "(▲ + 4) • 4 - 8 = 28", options: [5, 3, 4, 10], correct: 5, t: "Operaciones algebraicas combinadas de mayor complejidad con uso de paréntesis" },
-            { id: 6, symbol: "◆", formula: "◆ + 7 = 13", options: [6, 7, 5, 8], correct: 6, t: "Modelación de ecuaciones lineales mediante adición directa (x + a = b)" }
-        ];
-
-        let currentStepIndex = 0;
+        // VARIABLES GLOBALES DE CONTROL DEL JUEGO
+        // ==========================================
         let studentName = "";
         let startTime = 0;
         let timerInterval;
         let score = 0;
-        
-        // Sets de rastreo curricular para reporte docente
-        let correctTopics = new Set();
-        let incorrectTopics = new Set();
-        let tempTopicFailed = false;
+        let userMoodInitial = "";
+        let userMoodFinal = "";
+        let bonusSelectedAnswer = ""; // Almacena la respuesta del alumno en el bonus
 
+        // Variables contadoras de aciertos y desaciertos globales (Sección I y II)
+        let totalAciertos = 0;
+        let totalDesaciertos = 0;
+
+        // Almacenes pedagógicos de habilidades logradas y por reforzar
+        let correctSkills = new Set();
+        let incorrectSkills = new Set();
+
+        // 10 Preguntas de Selección Múltiple basadas en la evaluación
+        const multipleQuestions = [
+            {
+                q: "¿Cuál es la representación impropia del número mixto 2 1/3?",
+                opts: ["5/3", "6/3", "7/3", "8/3"],
+                ans: "7/3",
+                skill: "Representar números mixtos como fracciones impropias",
+                hint: "Recuerda multiplicar el entero por el denominador y sumarle el numerador: (2 * 3) + 1 = 7. El denominador se mantiene."
+            },
+            {
+                q: "Si transformamos 9/4 a número mixto, obtenemos:",
+                opts: ["1 1/4", "2 1/4", "2 2/4", "3 1/4"],
+                ans: "2 1/4",
+                skill: "Representar fracciones impropias como números mixtos",
+                hint: "Divide el numerador por el denominador (9 : 4 = 2 de entero y te sobra 1). El residuo queda arriba."
+            },
+            {
+                q: "¿Qué fracción es equivalente a 4/2?",
+                opts: ["2/1", "3/2", "1/2", "6/2"],
+                ans: "2/1",
+                skill: "Identificar y determinar equivalencias en fracciones",
+                hint: "Simplifica la fracción o realiza la división: 4 dividido entre 2 es igual a 2. Por tanto, es equivalente a 2/1."
+            },
+            {
+                q: "En la recta numérica, ¿entre qué números enteros se ubica 5/2?",
+                opts: ["0 y 1", "1 y 2", "2 y 3", "3 y 4"],
+                ans: "2 y 3",
+                skill: "Representar fracciones en la recta numérica",
+                hint: "Convierte 5/2 a número mixto: equivale a 2 1/2. Por ende, está justo al medio de los enteros 2 y 3."
+            },
+            {
+                q: "Cuál de las siguientes fracciones es una fracción impropia?",
+                opts: ["3/8", "7/9", "12/5", "1/2"],
+                ans: "12/5",
+                skill: "Identificar características de fracciones impropias",
+                hint: "Las fracciones impropias son aquellas donde el numerador (el de arriba) es mayor o igual que el denominador (el de abajo)."
+            },
+            {
+                q: "Si Juan tiene 3 1/2 manzanas, ¿cuántos medios (1/2) tiene en total?",
+                opts: ["6 medios", "7 medios", "8 medios", "4 medios"],
+                ans: "7 medios",
+                skill: "Representar números mixtos pictóricamente de forma concreta",
+                hint: "Cada una de las 3 manzanas tiene 2 medios (3 * 2 = 6 medios). Súmale el medio extra para tener 7 medios."
+            },
+            {
+                q: "¿Qué número mixto representa la fracción 13/6?",
+                opts: ["1 1/6", "2 1/6", "1 3/6", "2 3/6"],
+                ans: "2 1/6",
+                skill: "Representar fracciones impropias como números mixtos",
+                hint: "Divide: 13 : 6 = 2 enteros, con resto 1. Se forma 2 enteros y un sexto."
+            },
+            {
+                q: "Selecciona la pareja equivalente:",
+                opts: ["1 1/2 y 2/2", "1 2/5 y 7/5", "2 1/3 y 5/3", "1 3/4 y 8/4"],
+                ans: "1 2/5 y 7/5",
+                skill: "Identificar y determinar equivalencias en fracciones",
+                hint: "Convierte 1 2/5 a impropia: (1 * 5) + 2 = 7/5. Por ende, son totalmente equivalentes."
+            },
+            {
+                q: "¿Cuál de las siguientes fracciones es igual al número mixto 4 2/3?",
+                opts: ["12/3", "14/3", "15/3", "16/3"],
+                ans: "14/3",
+                skill: "Representar números mixtos como fracciones impropias",
+                hint: "(4 * 3) + 2 = 14. El denominador se mantiene en 3. Respuesta: 14/3."
+            },
+            {
+                q: "Si representamos 3/2 en la recta numérica, el punto se marca:",
+                opts: ["Antes del 1.", "Justo en el 1.", "Pasado el 1, antes del 2.", "Pasado el 2."],
+                ans: "Pasado el 1, antes del 2.",
+                skill: "Representar fracciones en la recta numérica",
+                hint: "Como 3/2 es equivalente a 1 1/2 (un entero y medio), debe situarse en la mitad exacta entre el 1 y el 2."
+            }
+        ];
+
+        let currentSec1Index = 0;
+        let sec1AttemptsPerQuestion = 0;
+
+        // SECCIÓN II: Datos de tabla equivalencias
+        const tableData = [
+            { type: 'mixto', input: '1 1/2', display: '1 1/2', correctAns: '3/2', placeholder: 'Impropia' },
+            { type: 'mixto', input: '2 3/4', display: '2 3/4', correctAns: '11/4', placeholder: 'Impropia' },
+            { type: 'impropia', input: '7/3', display: '7/3', correctAns: '2 1/3', placeholder: 'Mixto (ej: 2 1/3)' },
+            { type: 'impropia', input: '11/5', display: '11/5', correctAns: '2 1/5', placeholder: 'Mixto (ej: 2 1/5)' },
+            { type: 'mixto', input: '3 2/6', display: '3 2/6', correctAns: '20/6', placeholder: 'Impropia' },
+            { type: 'mixto', input: '4 1/2', display: '4 1/2', correctAns: '9/2', placeholder: 'Impropia' },
+            { type: 'impropia', input: '13/4', display: '13/4', correctAns: '3 1/4', placeholder: 'Mixto (ej: 3 1/4)' },
+            { type: 'mixto', input: '5 1/3', display: '5 1/3', correctAns: '16/3', placeholder: 'Impropia' }
+        ];
+
+        // ==========================================================
+        //  CONFIGURACIÓN NUEVO DESAFÍO DE CORRESPONDENCIA (SECCIÓN III)
+        // ==========================================================
+        const matchingConcepts = [
+            { id: "mixto", word: "MIXTO", def: "Número formado por un entero y una fracción propia." },
+            { id: "impropia", word: "IMPROPIA", def: "Fracción cuyo numerador es mayor que el denominador." },
+            { id: "equivalente", word: "EQUIVALENTE", def: "Fracciones que representan la misma cantidad." },
+            { id: "entero", word: "ENTERO", def: "Unidad completa en una fracción." }
+        ];
+
+        let selectedDefId = null;
+        let selectedWordId = null;
+        let matchedIds = []; // Almacena los pares resueltos correctamente
+
+        // Control de estados emocionales
+        function selectMood(mood, emoji) {
+            userMoodInitial = `${emoji} ${mood}`;
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`mood-${i}`).className = "p-3 border-2 border-black bg-white hover:bg-yellow-100 font-bold rounded flex flex-col items-center gap-2 transition";
+            }
+            event.currentTarget.className = "p-3 border-4 border-purple-700 bg-yellow-200 font-bold rounded flex flex-col items-center gap-2 transition scale-105";
+        }
+
+        function selectMoodFinal(mood, emoji) {
+            userMoodFinal = `${emoji} ${mood}`;
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`mood-final-${i}`).className = "p-3 border-2 border-black bg-white hover:bg-yellow-100 font-bold rounded flex flex-col items-center gap-2 transition";
+            }
+            event.currentTarget.className = "p-3 border-4 border-purple-700 bg-yellow-200 font-bold rounded flex flex-col items-center gap-2 transition scale-105";
+        }
+
+        // ==========================================
+        // SISTEMA DE ACCIONES
+        // ==========================================
         function comenzarMision() {
             const nameInput = document.getElementById('student-name');
             studentName = nameInput.value.trim().toUpperCase();
             
             if (studentName === "") {
-                showModal("¡ALERTA!", "¡Deber registrar tu nombre antes de comenzar el rescate de Gatito Chill!");
+                showModal("¡ALERTA!", "¡Debes registrar tu nombre de héroe para comenzar el desafío contra el Patito Amarillito!");
+                return;
+            }
+            if (!userMoodInitial) {
+                showModal("AUTO-EVALUACIÓN", "Por favor cuéntanos cómo te sientes hoy antes de iniciar.");
                 return;
             }
 
             document.getElementById('intro-box').classList.add('hidden');
             document.getElementById('game-board').classList.remove('hidden');
+            document.getElementById('hud-name').innerText = studentName;
             
             startTime = Date.now();
-            correctTopics.clear();
-            incorrectTopics.clear();
             startTimer();
-            initMap();
+            initMultipleQuestions();
         }
 
         function startTimer() {
@@ -256,126 +559,362 @@
                 const diff = Math.floor((Date.now() - startTime) / 1000);
                 const m = Math.floor(diff / 60).toString().padStart(2, '0');
                 const s = (diff % 60).toString().padStart(2, '0');
-                document.getElementById('live-timer').innerText = `TIEMPO: ${m}:${s}`;
+                document.getElementById('live-timer').innerText = `${m}:${s}`;
             }, 1000);
         }
 
-        function initMap() {
-            const map = document.getElementById('steps-map');
-            map.innerHTML = '';
-            for (let i = 1; i <= 7; i++) {
-                const step = document.createElement('div');
-                step.id = `step-bar-${i}`;
-                step.className = "p-2 border-2 border-black bg-gray-600 font-bold text-center transition-all text-white";
-                step.innerText = i === 7 ? "META 🏁" : `CASILLA ${i}°`;
-                map.appendChild(step);
-            }
-            updateChallenge();
-        }
-
-        function updateChallenge() {
-            // Si llegamos a la meta (Casilla 7)
-            if (currentStepIndex >= challenges.length) {
-                concludeGame();
+        // ==========================================
+        // RESOLUCIÓN SECCIÓN I: OPCIONES MÚLTIPLES
+        // ==========================================
+        function initMultipleQuestions() {
+            if (currentSec1Index >= multipleQuestions.length) {
+                // Pasamos directo a Sección II
+                document.getElementById('sec-multiple').classList.add('hidden');
+                document.getElementById('sec-tabla').classList.remove('hidden');
+                initTablaEquivalencias();
                 return;
             }
 
-            const challenge = challenges[currentStepIndex];
-            tempTopicFailed = false; // Reiniciamos indicador de error en esta casilla
+            const qData = multipleQuestions[currentSec1Index];
+            document.getElementById('sec1-progress').innerText = `Pregunta ${currentSec1Index + 1} de 10`;
+            document.getElementById('sec1-pregunta').innerText = qData.q;
             
-            document.getElementById('casilla-info').innerText = `CASILLA ${challenge.id}°`;
-            document.getElementById('equation-display').innerHTML = `Encuentra el valor de ${challenge.symbol}:<br><span class="text-blue-600">${challenge.formula}</span>`;
-            
-            const select = document.getElementById('answer-select');
-            select.innerHTML = '<option value="" disabled selected>-- Elige un número --</option>';
-            
-            const shuffled = [...challenge.options].sort(() => Math.random() - 0.5);
-            shuffled.forEach(opt => {
-                const el = document.createElement('option');
-                el.value = opt;
-                el.innerText = `Valor: ${opt}`;
-                select.appendChild(el);
+            sec1AttemptsPerQuestion = 0;
+
+            const optsContainer = document.getElementById('sec1-opciones');
+            optsContainer.innerHTML = "";
+
+            const dialogosPatito = [
+                "¡Esa fracción no la vas a poder descifrar!",
+                "¿Estás seguro de que dominas la recta numérica?",
+                "¡El Imperio de los Patitos de Goma gobernará la cocina!",
+                "¡Esa fracción impropia es demasiado para ti!",
+                "¡Ríndete Gatito Chill, el pastel es mío!"
+            ];
+            document.getElementById('battle-dialog').innerText = `"${dialogosPatito[currentSec1Index % dialogosPatito.length]}"`;
+            document.getElementById('battle-emoji').innerText = "🦆💢";
+
+            qData.opts.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = "btn-alternativa bg-white hover:bg-slate-200 text-black font-bold p-4 text-xl text-left";
+                btn.innerText = option;
+                btn.onclick = () => checkMultipleAnswer(option);
+                optsContainer.appendChild(btn);
             });
-
-            // Actualizar visualizador de ruta de escape
-            for (let i = 1; i <= 7; i++) {
-                const bar = document.getElementById(`step-bar-${i}`);
-                if (i < challenge.id) {
-                    bar.className = "p-2 border-2 border-black bg-green-500 text-white font-bold text-center";
-                } else if (i === challenge.id) {
-                    bar.className = "p-2 border-2 border-black bg-yellow-400 text-black font-bold text-center animate-pulse";
-                }
-            }
         }
 
-        function checkStep() {
-            const select = document.getElementById('answer-select');
-            const userVal = parseInt(select.value);
-            
-            if (isNaN(userVal)) {
-                showModal("¡CUIDADO!", "Por favor selecciona una alternativa numérica.");
-                return;
-            }
-
-            const challenge = challenges[currentStepIndex];
-
-            if (userVal === challenge.correct) {
-                // Registrar destreza pedagógica
-                if (!tempTopicFailed) {
-                    correctTopics.add(challenge.t);
-                }
-                
-                score += 100;
-                
-                // Efecto del gatito progresivo
-                if (currentStepIndex === 2) {
-                    document.getElementById('cat-status').innerText = "🔓😺";
-                    document.getElementById('status-text').innerText = "Estado: ¡Forzando Cerradura!";
-                } else if (currentStepIndex === 4) {
-                    document.getElementById('cat-status').innerText = "🥤😺";
-                    document.getElementById('status-text').innerText = "Estado: ¡Gatito hidratándose!";
-                }
-
-                showModal("¡POW!", "¡Valor correcto! Código validado con éxito. ¡Avanzas de casilla!", null, () => {
-                    currentStepIndex++;
-                    updateChallenge();
+        // Comprobación de las respuestas múltiples de la sección I
+        function checkMultipleAnswer(selected) {
+            const qData = multipleQuestions[currentSec1Index];
+            if (selected === qData.ans) {
+                score += 50;
+                totalAciertos++;
+                document.getElementById('hud-score').innerText = `${score} Ptos`;
+                correctSkills.add(qData.skill);
+                confetti({ particleCount: 30, spread: 40 });
+                showModal("¡BOOM!", "¡Respuesta correcta! Has debilitado la barrera del Patito Amarillito.", null, () => {
+                    currentSec1Index++;
+                    initMultipleQuestions();
                 });
             } else {
-                tempTopicFailed = true;
-                incorrectTopics.add(challenge.t);
-                document.getElementById('left-panel').classList.add('shake');
-                setTimeout(() => document.getElementById('left-panel').classList.remove('shake'), 400);
-                
-                showModal("¡ZAP!", "El código ingresado no equilibra la balanza. ¡Gatito Chill sigue atrapado!", "Pista: Reemplaza la figura de la ecuación por el valor seleccionado y verifica si la igualdad se cumple.");
+                totalDesaciertos++;
+                sec1AttemptsPerQuestion++;
+                incorrectSkills.add(qData.skill);
+                document.getElementById('sec-multiple').classList.add('shake');
+                setTimeout(() => document.getElementById('sec-multiple').classList.remove('shake'), 400);
+                showModal("¡PUM!", "El Patito de Goma bloqueó tu ataque. Intenta de nuevo.", qData.hint);
             }
         }
 
-        function concludeGame() {
+        // ==========================================
+        // RESOLUCIÓN SECCIÓN II: TABLA DE EQUIVALENCIAS
+        // ==========================================
+        function initTablaEquivalencias() {
+            const tbody = document.getElementById('tabla-conversion-body');
+            tbody.innerHTML = "";
+
+            tableData.forEach((row, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-800 hover:bg-slate-800/50";
+                
+                if (row.type === 'mixto') {
+                    tr.innerHTML = `
+                        <td class="p-3 font-bold text-lg border-r border-slate-700">${row.display}</td>
+                        <td class="p-3">
+                            <input type="text" id="table-input-${idx}" placeholder="${row.placeholder}" class="p-2 w-full max-w-xs text-black font-bold border-2 border-black rounded text-center uppercase" />
+                        </td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td class="p-3 border-r border-slate-700">
+                            <input type="text" id="table-input-${idx}" placeholder="${row.placeholder}" class="p-2 w-full max-w-xs text-black font-bold border-2 border-black rounded text-center uppercase" />
+                        </td>
+                        <td class="p-3 font-bold text-lg">${row.display}</td>
+                    `;
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+        function checkTablaEquivalencias() {
+            let allCorrect = true;
+            let currentIncorrect = false;
+
+            tableData.forEach((row, idx) => {
+                const inputEl = document.getElementById(`table-input-${idx}`);
+                const val = inputEl.value.trim().replace(/\s+/g, ' ');
+                
+                if (inputEl.classList.contains('bg-green-200')) {
+                    return; 
+                }
+
+                if (val.toUpperCase() === row.correctAns.toUpperCase()) {
+                    score += 25;
+                    totalAciertos++;
+                    inputEl.classList.remove('bg-red-200');
+                    inputEl.classList.add('bg-green-200', 'disabled');
+                    inputEl.disabled = true;
+                } else {
+                    allCorrect = false;
+                    currentIncorrect = true;
+                    totalDesaciertos++;
+                    inputEl.classList.add('bg-red-200');
+                }
+            });
+
+            if (allCorrect) {
+                document.getElementById('hud-score').innerText = `${score} Ptos`;
+                correctSkills.add("Determinar equivalencias entre fracciones impropias y números mixtos");
+                confetti({ particleCount: 100, spread: 60 });
+                
+                // Transición directa al Desafío de Correspondencia (Sección III)
+                showModal("¡ÉXITO!", "¡Reparaste la máquina pastelera! El Chef Fracción está muy feliz.", null, () => {
+                    document.getElementById('sec-tabla').classList.add('hidden');
+                    document.getElementById('sec-vocabulario').classList.remove('hidden');
+                    initVocabularioMatch();
+                });
+            } else {
+                incorrectSkills.add("Determinar equivalencias entre fracciones impropias y números mixtos");
+                showModal("ERROR EN MÁQUINA", "Algunas piezas no encajan perfectamente. Revisa los recuadros marcados en rojo.");
+            }
+        }
+
+        // ==========================================================
+        //  NUEVO MOTOR INTERACTIVO: DESAFÍO DE CORRESPONDENCIA (SEC III)
+        // ==========================================================
+        function initVocabularioMatch() {
+            selectedDefId = null;
+            selectedWordId = null;
+            matchedIds = [];
+
+            // Barajar los arrays de forma separada para que no queden emparejados de antemano
+            const shuffledDefs = [...matchingConcepts].sort(() => Math.random() - 0.5);
+            const shuffledWords = [...matchingConcepts].sort(() => Math.random() - 0.5);
+
+            const defsContainer = document.getElementById('match-definitions-container');
+            const wordsContainer = document.getElementById('match-words-container');
+
+            defsContainer.innerHTML = "";
+            wordsContainer.innerHTML = "";
+
+            // Renderizar tarjetas de Definiciones
+            shuffledDefs.forEach(concept => {
+                const card = document.createElement('div');
+                card.id = `def-card-${concept.id}`;
+                card.className = "match-card p-4 bg-white text-black font-semibold rounded shadow flex flex-col justify-center h-28";
+                card.innerHTML = `
+                    <p class="text-sm md:text-base leading-tight italic">"${concept.def}"</p>
+                    <span id="label-def-${concept.id}" class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-wider block">Presiona para seleccionar</span>
+                `;
+                card.onclick = () => selectDefinition(concept.id);
+                defsContainer.appendChild(card);
+            });
+
+            // Renderizar tarjetas de Conceptos (Palabras)
+            shuffledWords.forEach(concept => {
+                const card = document.createElement('div');
+                card.id = `word-card-${concept.id}`;
+                card.className = "match-card p-4 bg-slate-100 text-slate-800 font-extrabold text-xl flex items-center justify-between rounded shadow h-28 border-dashed border-2 border-slate-400";
+                card.innerHTML = `
+                    <span class="font-mono">${concept.word}</span>
+                    <span id="icon-word-${concept.id}" class="text-xl">🔒</span>
+                `;
+                card.onclick = () => selectWord(concept.id);
+                wordsContainer.appendChild(card);
+            });
+        }
+
+        function selectDefinition(id) {
+            if (matchedIds.includes(id)) return;
+
+            // Deseleccionar anterior si existe
+            if (selectedDefId) {
+                document.getElementById(`def-card-${selectedDefId}`).classList.remove('selected');
+                document.getElementById(`label-def-${selectedDefId}`).innerText = "Presiona para seleccionar";
+            }
+
+            selectedDefId = id;
+            const card = document.getElementById(`def-card-${id}`);
+            card.classList.add('selected');
+            document.getElementById(`label-def-${id}`).innerText = "🔍 BUSCANDO SU PALABRA...";
+
+            checkMatchAttempt();
+        }
+
+        function selectWord(id) {
+            if (matchedIds.includes(id)) return;
+
+            if (selectedWordId) {
+                document.getElementById(`word-card-${selectedWordId}`).classList.remove('selected');
+            }
+
+            selectedWordId = id;
+            const card = document.getElementById(`word-card-${id}`);
+            card.classList.add('selected');
+
+            checkMatchAttempt();
+        }
+
+        function checkMatchAttempt() {
+            // Requiere que ambos lados estén seleccionados
+            if (selectedDefId && selectedWordId) {
+                const defCard = document.getElementById(`def-card-${selectedDefId}`);
+                const wordCard = document.getElementById(`word-card-${selectedWordId}`);
+
+                if (selectedDefId === selectedWordId) {
+                    // ¡Correcto!
+                    const correctId = selectedDefId;
+                    matchedIds.push(correctId);
+
+                    score += 100;
+                    totalAciertos++;
+                    document.getElementById('hud-score').innerText = `${score} Ptos`;
+
+                    // Actualizar estilos a logrados permanentemente
+                    defCard.className = "match-card matched p-4 text-emerald-950 font-bold rounded flex flex-col justify-center h-28";
+                    document.getElementById(`label-def-${correctId}`).innerText = "¡EMPAREJADO CORRECTAMENTE! ✅";
+
+                    wordCard.className = "match-card matched p-4 text-emerald-950 font-black text-xl flex items-center justify-between rounded h-28";
+                    document.getElementById(`icon-word-${correctId}`).innerText = "✅";
+
+                    // Confeti individual de logro
+                    confetti({ particleCount: 20, colors: ['#10b981'] });
+
+                    selectedDefId = null;
+                    selectedWordId = null;
+                } else {
+                    // ¡Incorrecto!
+                    totalDesaciertos++;
+
+                    // Efecto shake en rojo
+                    defCard.classList.add('shake', 'bg-red-200');
+                    wordCard.classList.add('shake', 'bg-red-200');
+
+                    // Guardar referencias temporales para limpiarlas tras la animación
+                    const tempDef = selectedDefId;
+                    const tempWord = selectedWordId;
+
+                    selectedDefId = null;
+                    selectedWordId = null;
+
+                    setTimeout(() => {
+                        const dc = document.getElementById(`def-card-${tempDef}`);
+                        const wc = document.getElementById(`word-card-${tempWord}`);
+                        if (dc) {
+                            dc.classList.remove('shake', 'bg-red-200', 'selected');
+                            document.getElementById(`label-def-${tempDef}`).innerText = "Presiona para seleccionar";
+                        }
+                        if (wc) {
+                            wc.classList.remove('shake', 'bg-red-200', 'selected');
+                        }
+                    }, 500);
+
+                    showModal("CONCEPTO ERRÓNEO", "Esa palabra no corresponde a la definición que seleccionaste. ¡Sigue intentando!");
+                }
+            }
+        }
+
+        function finishVocabulario() {
+            if (matchedIds.length < 4) {
+                showModal("FALTAN CONCEPTOS", "¡Debes emparejar correctamente las 4 definiciones con sus conceptos matemáticos para avanzar!");
+                return;
+            }
+            correctSkills.add("Comprender vocabulario clave (Mixto, Impropia, Equivalente, Entero)");
+            document.getElementById('sec-vocabulario').classList.add('hidden');
+            document.getElementById('sec-bonus').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // BONUS STAGE Y RESOLUCIÓN FINAL
+        // ==========================================
+        function checkBonus() {
+            const select = document.getElementById('bonus-select');
+            const val = select.value;
+
+            if (!val) {
+                showModal("¡ÚLTIMO ESFUERZO!", "Selecciona una alternativa para el Bonus Stage.");
+                return;
+            }
+
+            if (!userMoodFinal) {
+                showModal("AUTO-EVALUACIÓN", "Por favor, cuéntanos cómo te sientes al terminar la misión matemática.");
+                return;
+            }
+
+            // Almacenamos la respuesta seleccionada por el estudiante para reportarla al formulario
+            bonusSelectedAnswer = val;
+
+            if (val === "7/5") {
+                score += 200;
+                totalAciertos++;
+                correctSkills.add("Habilidad matemática avanzada (Acertijo Inverso)");
+                confetti({ particleCount: 150, spread: 80 });
+                showModal("¡IMPRESIONANTE!", "¡Has descifrado el acertijo del sabio! 2/5 + 5/5 (1 entero) = 7/5.", null, () => {
+                    concludeMision();
+                });
+            } else {
+                totalDesaciertos++;
+                incorrectSkills.add("Habilidad matemática avanzada (Acertijo Inverso)");
+                showModal("FALLASTE EL BONUS", "Esa no es la respuesta del acertijo. Pero no te preocupes, ¡es hora de reclamar tu victoria de igual manera!", null, () => {
+                    concludeMision();
+                });
+            }
+        }
+
+        function concludeMision() {
             clearInterval(timerInterval);
-            confetti({ particleCount: 200, spread: 80 });
-            
-            const finalTime = document.getElementById('live-timer').innerText.replace("TIEMPO: ", "");
             document.getElementById('game-board').classList.add('hidden');
             document.getElementById('win-screen').classList.remove('hidden');
 
-            const listCorrectas = Array.from(correctTopics).map(t => `• ${t}`).join("\n") || "Ninguna";
-            const listIncorrectas = Array.from(incorrectTopics).map(t => `• ${t}`).join("\n") || "¡Ninguna! Dominio absoluto de ecuaciones.";
+            const finalTime = document.getElementById('live-timer').innerText;
 
-            const reporteTxt = `📋 REPORTE EVALUATIVO - DOCENTE 📋
+            const listCorrectas = Array.from(correctSkills).map(t => `• ${t}`).join("\n") || "Ninguna";
+            const listIncorrectas = Array.from(incorrectSkills).map(t => `• ${t}`).join("\n") || "¡Ninguna! Dominio absoluto de fracciones.";
+
+            const reporteTxt = `📋 REPORTE EVALUATIVO FRACCIONES - DOCENTE 📋
 Estudiante: ${studentName}
+Estado Emocional Inicial: ${userMoodInitial}
+Estado Emocional Final: ${userMoodFinal}
 Puntaje Total: ${score} Ptos
 Tiempo total de ejecución: ${finalTime}
+
+📊 ESTADÍSTICAS DE RESPUESTAS:
+✔️ Cantidad de Aciertos: ${totalAciertos}
+❌ Cantidad de Desaciertos: ${totalDesaciertos}
+
+🔮 RESPUESTA EN EL BONUS TRACK:
+🎯 Elegida por alumno: ${bonusSelectedAnswer || "Ninguna seleccionada"} (${bonusSelectedAnswer === "7/5" ? "Correcta" : "Incorrecta"})
 
 🎯 HABILIDADES LOGRADAS:
 ${listCorrectas}
 
-⚠️ NUDOS CRÍTICAS A REFORZAR:
+⚠️ NUDOS CRÍTICOS A REFORZAR:
 ${listIncorrectas}`;
 
             document.getElementById('reporte-consola').innerText = reporteTxt;
         }
 
-        // Sistema de Modales Cómics no bloqueantes (Reemplazo de alertas)
+        // Sistema de Modales Cómics
         let modalCallback = null;
 
         function showModal(title, text, hint = null, callback = null) {
@@ -384,7 +923,7 @@ ${listIncorrectas}`;
             modalCallback = callback;
 
             const titleElement = document.getElementById('modal-title');
-            if (title === "¡POW!") {
+            if (title === "¡BOOM!" || title === "¡ÉXITO!" || title === "¡COMPLETADO!" || title === "¡IMPRESIONANTE!") {
                 titleElement.className = "comic-header text-5xl mb-4 text-green-600";
             } else {
                 titleElement.className = "comic-header text-5xl mb-4 text-red-600";
@@ -409,23 +948,29 @@ ${listIncorrectas}`;
             }
         }
 
-        // Envío seguro de datos al Google Sheet
+        // Envío seguro de datos al Google Sheet del docente
         async function sendToSheet() {
             const btn = document.getElementById('send-btn');
-            const time = document.getElementById('live-timer').innerText.replace("TIEMPO: ", "");
+            const time = document.getElementById('live-timer').innerText;
             
             btn.disabled = true;
             btn.innerText = "ENVIANDO REPORTE...";
 
-            const txtCorrectas = Array.from(correctTopics).join(", ") || "Ninguna";
-            const txtIncorrectas = Array.from(incorrectTopics).join(", ") || "Ninguna";
+            const txtCorrectas = Array.from(correctSkills).join(", ") || "Ninguna";
+            const txtIncorrectas = Array.from(incorrectSkills).join(", ") || "Ninguna";
 
             const formData = new URLSearchParams();
-            formData.append(ENTRY_NAME, studentName);
+            formData.append(ENTRY_NAME, studentName + ` (Emociones: Ini: ${userMoodInitial} / Fin: ${userMoodFinal})`);
             formData.append(ENTRY_SCORE, score);
             formData.append(ENTRY_TIME, time);
             formData.append(ENTRY_CORRECTAS, txtCorrectas);
             formData.append(ENTRY_INCORRECTAS, txtIncorrectas);
+            
+            formData.append(ENTRY_CANT_ACIERTOS, totalAciertos);
+            formData.append(ENTRY_CANT_DESACIERTOS, totalDesaciertos);
+            
+            // Envío del Bonus Track (Acertijo Inverso) al Google Form
+            formData.append(ENTRY_BONUS, bonusSelectedAnswer);
 
             try {
                 await fetch(GOOGLE_FORM_URL, {
